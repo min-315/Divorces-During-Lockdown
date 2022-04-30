@@ -9,6 +9,6 @@ The two datasets can be retrieved from these links:
 - https://open.canada.ca/data/en/dataset/82cc8f33-3b40-4a57-83d1-b8059a12f742
 
 ## Content
-Inputs Folder: Contains the raw datasets (csv files)
-Outputs Folder: Contains the RMD, cleaned datasets, and Referenced.bib
-Script: Contains the R-Script
+- Inputs Folder: Contains the raw datasets (csv files)
+- Outputs Folder: Contains the RMD, cleaned datasets, and Referenced.bib
+- Script: Contains the R-Script
