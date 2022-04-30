@@ -1,0 +1,105 @@
+---
+title: "Finding Out If People Are Getting Divorced Due to the Lockdown Caused by the COVID-19 Pandemic."
+subtitle: "Observing the number divorces in Canada from 2019 to 2021."
+author: 
+  - Min Chang
+thanks: "Code and data are available at: https://github.com/min-315/Divorces-During-Lockdown.git"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+abstract: "Using the data from both Open Data Toronto and Open Data Government of Canada, this report looks into registered marriage and divorce cases that may have occurred due to the COVID-19 Lockdown. The lockdown has made people to stay with their family or partners every day at their homes to lower the COVID-19 cases. However, the result of the lockdown were not only lowered COVID-19 cases but also changes in martial statuses from either married or divorced. Further analysis of the data was done to yield a better understanding to the changes in martial statuses after the lockdown. \\par \\textbf{Keywords:} COVID-19, Lockdown, Marriage, Divorce, Toronto, Canada, Open Data Toronto, Open Data Government of Canada"
+
+output:
+  bookdown::pdf_document2:
+    fig_caption: yes
+    keep_tex: true
+    number_sections: yes
+header-includes:
+  \usepackage{float}
+  \floatplacement{figure}{H}
+toc: FALSE
+bibliography: references.bib
+---
+
+\tableofcontents
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.pos = "!H", echo = TRUE)
+
+library(opendatatoronto)
+library(tidyverse)
+library(kableExtra)
+library(forcats)
+library(ggplot2)
+library(knitr)
+library(tibbletime)
+library(dplyr)
+library(readr)
+
+load("Outputs/RData/marriage_divorce_data.RDA")
+load("Outputs/RData/marriage_license_data.RDA")
+```
+
+# Introduction
+The COVID-19 pandemic has lead to a lock-down that caused the world,including Canada, to momentarily stop from social gatherings, eating at restaurants, shopping, and any occasions that may involve groups of people in one area. To prevent the virus from spreading further, the Canadian Government requested people to remain in their homes until the COVID-19 cases flattened and was safe for people to go back to their normal daily lives. However, the lock-down meant people had to constantly be in close contact with their families and/or partners in the same space for several days until the lock-down was done [@Liu].
+
+As the lock-down made people to stay at their homes, some took the opportunity to catch up with their families and/or partners as education and work has also shifted to remote, people had more flexibility with their time. However, with limited space and repeatedly interacting with families and/or partners can become tiring and irritable. Especially, with married couples, there has been information married couples were getting divorced after the lock-down was over [@Savage].
+
+Therefore, through this report, we will take a look into divorce cases in Canada to see if a lot of people are actually getting divorced after the lock-down. We then will take a look at registered marriage cases in Toronto to see the differences in the number of marriages versus divorces to see which relationship change was the most effected by the lock-down. 
+
+# Data
+
+## Source
+Two different data-sets are used for this report. The data-set for divorce cases in Canada is retrieved from Open Data Government of Canada which includes data regarding people who have gotten married or divorced from 1970 to 2020; it also includes geographic data of different provinces in Canada [@divorce]. The other data-set is the registered marriage cases in Toronto that is retrieved from Open Data Toronto which includes data on registered marriages in different cities in Ontario, Canada [@registered]. Using those two data-sets, popular information regarding increasing cases of divorce between married couples after the lock-down can be observed and will also compare the data with number of registered marriages during the similar time period of people getting divorced to see if it caused any changes to people who were about to get married. 
+
+
+## Data Organization
+
+To analyze the two data-sets, the `R programming language`[@R] was used for statistical computing and graphics.
+The `opendatatoronto`[@opendata] was used to access the City of Toronto Open Data portal. The `tidyverse` [@tidyverse] package was downloaded to use the other R packages. The `dplyr` [@dplyr] was downloaded to help have freedom controlling the variables in the data. The `readr` [@readr] was downloaded to read rectangular data, such as csv files, in a convenient and fast manner. The `kableExtra` [@kableextra] was downloaded to help construct tables. The `ggplot2` [@ggplot2] was downloaded ot help construct any style of graphs. The `forcats` [@cats] was downloaded to work with categorical variables. The `tibbletime` [@tibbletime] was downloaded to easily control the time within data-sets. Lastly, the `knitr` [@knitr] was downloaded to allow data to be processed into various document formats. 
+
+# Result
+
+With several `R packages` downloaded, the two data-sets were cleaned to only have variables that are useful and to make it easier to observe.  
+
+```{r table, echo=FALSE, fig.pos = "!H"}
+
+marriage_divorce_data|>
+  knitr::kable(
+    caption = "Divorced Cases in Canada from 2019 to 2020",
+    col.names = c("Year", "Geographic", "Sex"),
+    align = c('c', 'c', 'c'),
+    booktabs = TRUE,
+    linesep = ""
+  )%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+Table.\@ref(tab:table) is showing divorce cases that were filed in Canada between 2019 and 2020. Before Table.\@ref(tab:table) was constructed, the original data-set included empty and unclear variables that did not serve any purpose for this report.The data-set is also quite big as it includes divorce cases starting from 1970 and divorce cases that were filed from different provinces in Canada.Thus, with the downloaded R packages, 16 variables were cleaned into 3 variables and the time period was also filtered to be between 2019 to 2020. In addition, the geographic area was filtered to only Canada because the table would have become too complex to observe and it made more sense to see the overall divorce cases in Canada as divorces do not occur in one specific area. Lastly, the data-set was only updated until 2020, thus the data is missing data on 2021 which would been much better comparing with Figure.\@ref(fig:line). Moreover, the data-set is unclear with the number of divorce cases as there is no number that indicates the amount of people who got divorced in 2019 and 2020.
+
+```{r line, fig.cap="Number of Registered Marriage Licenses From 2019 to 2021", echo=FALSE}
+
+ggplot()+
+  geom_line(data = marriage_license_data, mapping = aes(x=TIME_PERIOD, y=MARRIAGE_LICENSES, group = 1))+
+  labs(title = "Registered Marriages in Toronto from 2019 to 2021",
+       x = "Time Period (year-month)",
+       y = "Registered Marriage Licenses")+
+  theme(axis.text.x = element_text(angle = 45, hjust =  1))
+```
+
+Figure.\@ref(fig:line) is a line graph that is showing the number of registered marriage licenses and the changes from 2019 to 2021. Compared to Table.\@ref(tab:table)'s data-set, Figure.\@ref(fig:line)'s data-set has less variables to clean and did not contain variables that were empty or were meaningless for this report. The variables that were filtered were the cities and time period the marriage licenses were registered. This data-set was constructed to be a line graph to observe the number of people registering their marriages from 2019 to 2021. The data-set included 2022 data as well but 2022 is when the lock-down was no longer applied in any provinces in Canada like Ontario, therefore it would have not help support the purpose of this report. 
+
+After creating the table (Table.\@ref(tab:table)) and graph (Figure.\@ref(fig:line)), with the data available it is evident that there are more people getting married than getting divorced. There are articles that a lot more people are getting divorced after the lock-down as people were getting tired of constantly being in close contact with their family and/or partners in a limited space [@Liu]. On top of close contact, people were becoming more aware of their mental health after realizing how tiring it is to repeatedly experience days that feel the same [@Savage]. On the other hand, there are relationships that became stronger after lock-down as they were able to spend more time to learn more about each other and figure out various ways to understand each other [@Bowden]. Overall, the lock-down did effect relationships to change their status to either married or divorced. 
+
+# Discussion
+
+There was an expectation of high divorce cases with married couples other than having to constantly be in close contact with each other. Couples with kid(s) had more work in their homes as the lock-down caused school to be delivered online making parents having to take care of their kids while doing their own work [@Savage]. Most households, either parents can focus more on housework when kids are at school as parents do not have to stop mid-way to help take care of their (kid)s. Especially with parents who do not have their partners to help with the household would have struggled more to take care of their kids and the household work at the same time. After the lock-down was over, women were the ones who initiated the divorce as they were still experiencing "disproportionate share of housework and childcare" [@Savage]. However, unlike the articles about divorces after lock-down, Table.\@ref(tab:table) is showing approximately four cases of divorces in Canada. The four divorce cases in Canada could either mean 40 or 4 people for each case, but as the data itself was unclear to begin with, it is hard to decipher.
+
+On the other hand, Figure.\@ref(fig:line) is showing a great increase in registered marriage licenses between 2021 June to September which was the time period where lock-down was just over. Even though there were couples that realized their relationship could not move any further, there were also couples discovering life-long partners. Some people thought the lock-down was the perfect timing to lock their relationships with their partners as their love towards each other were validated by taking the extra time they had in their homes to know more about each other [@Bowden]. According to [@Sacher], during the lock-down younger couples' relationship quality actually improved much better leading to marriage, when older couple's relationship quality deteriorated leading to divorces. With that information in mind, there can be an assumption that Table.\@ref(tab:table) is showing the data of divorce cases that were filed after lock-down would be older couples rather than younger couples. 
+
+## Further Improvements
+
+After analyzing the data with supporting articles, the report would have been more engaging with the comparison of number of females and males initiating divorces.The supporting articles often mention women are the people who initiate divorces and felt the most pressure during the lock-down [@Savage].
+
+\newpage
+
+# References
+
